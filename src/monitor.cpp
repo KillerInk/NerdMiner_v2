@@ -9,6 +9,7 @@
 #include "monitor.h"
 #include "drivers/storage/storage.h"
 #include "drivers/devices/device.h"
+#include "time.h"
 
 extern uint32_t templates;
 extern uint32_t hashes;
@@ -39,13 +40,16 @@ String poolAPIUrl;
 
 void setup_monitor(void){
     /******** TIME ZONE SETTING *****/
-
+    //get timezone without summertime difference
+    configTime(Settings.Timezone * 60 * 60, 0, "pool.ntp.org");
+    tm t;
+    getLocalTime(&t);
     timeClient.begin();
-    
-    // Adjust offset depending on your zone
-    // GMT +2 in seconds (zona horaria de Europa Central)
-    timeClient.setTimeOffset(3600 * Settings.Timezone);
-
+    //we have summmer time increase it by one hour
+    if(t.tm_isdst)
+      timeClient.setTimeOffset(3600 * (Settings.Timezone+1));
+    else//winter is here :D
+      timeClient.setTimeOffset(3600 * Settings.Timezone);
     Serial.println("TimeClient setup done");
 #ifdef SCREEN_WORKERS_ENABLE
     poolAPIUrl = getPoolAPIUrl();

@@ -8,4 +8,5 @@
 #define DEFAULT_WALLETID	"yourBtcAddress"
 #define DEFAULT_POOLPORT	21496
 #define DEFAULT_TIMEZONE	2
+#define DEFAULT_TIMEZONE	1
 #endif
