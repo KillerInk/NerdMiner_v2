@@ -9,8 +9,12 @@
 
 #include "wManager.h"
 #include "monitor.h"
+#ifndef NO_DISPLAY
 #include "drivers/displays/display.h"
+#endif
+#ifndef NO_SDCARD
 #include "drivers/storage/SDCard.h"
+#endif
 #include "drivers/storage/nvMemory.h"
 #include "drivers/storage/storage.h"
 #include "mining.h"
@@ -28,8 +32,9 @@ WiFiManager wm;
 extern monitor_data mMonitor;
 
 nvMemory nvMem;
-
+#ifndef NO_SDCARD
 extern SDCard SDCrd;
+#endif
 
 void saveConfigCallback()
 // Callback notifying us of the need to save configuration
@@ -51,7 +56,9 @@ void configModeCallback(WiFiManager* myWiFiManager)
 // Called when config mode launched
 {
     Serial.println("Entered Configuration Mode");
+    #ifndef NO_DISPLAY
     drawSetupScreen();
+    #endif
     Serial.print("Config SSID: ");
     Serial.println(myWiFiManager->getConfigPortalSSID());
 
@@ -99,6 +106,7 @@ void init_WifiManager()
 
     if (!nvMem.loadConfig(&Settings))
     {
+        #ifndef NO_SDCARD
         //No config file on internal flash.
         if (SDCrd.loadConfigFile(&Settings))
         {
@@ -110,10 +118,15 @@ void init_WifiManager()
             //No config file on SD card. Starting wifi config server.
             forceConfig = true;
         }
+        #else
+        forceConfig = true;
+        #endif
     };
     
     // Free the memory from SDCard class 
+    #ifndef NO_SDCARD
     SDCrd.terminate();
+    #endif
     
     // Reset settings (only for development)
     //wm.resetSettings();
@@ -200,9 +213,11 @@ void init_WifiManager()
     if (forceConfig)    
     {
         // Run if we need a configuration
-        //No configuramos timeout al modulo
-        wm.setConfigPortalBlocking(true); //Hacemos que el portal SI bloquee el firmware
+        //We do not configure timeout to the module
+        wm.setConfigPortalBlocking(true); //We make the SI portal block the firmware
+        #ifndef NO_DISPLAY
         drawSetupScreen();
+        #endif
         mMonitor.NerdStatus = NM_Connecting;
         if (!wm.startConfigPortal(DEFAULT_SSID, DEFAULT_WIFIPW))
         {

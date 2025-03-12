@@ -5,14 +5,20 @@
 #include <WiFi.h>
 #include <WebServer.h>
 #include <esp_task_wdt.h>
+#ifndef NO_DISPLAY
 #include <OneButton.h>
+#endif
 
 #include "mbedtls/md.h"
 #include "wManager.h"
 #include "mining.h"
 #include "monitor.h"
+#ifndef NO_DISPLAY
 #include "drivers/displays/display.h"
+#endif
+#ifndef NO_SDCARD
 #include "drivers/storage/SDCard.h"
+#endif
 #include "timeconst.h"
 
 #ifdef TOUCH_ENABLE
@@ -24,6 +30,7 @@
 //15 minutes WDT for miner task
 #define WDT_MINER_TIMEOUT 900
 
+#ifndef NO_DISPLAY
 #ifdef PIN_BUTTON_1
   OneButton button1(PIN_BUTTON_1);
 #endif
@@ -35,13 +42,16 @@
 #ifdef TOUCH_ENABLE
 extern TouchHandler touchHandler;
 #endif
+#endif
 
 extern monitor_data mMonitor;
 
+#ifndef NO_SDCARD
 #ifdef SD_ID
   SDCard SDCrd = SDCard(SD_ID);
 #else  
   SDCard SDCrd = SDCard();
+#endif
 #endif
 
 /**********************⚡ GLOBAL Vars *******************************/
@@ -98,6 +108,7 @@ void setup()
   /******** INIT NERDMINER ************/
   Serial.println("NerdMiner v2 starting......");
 
+#ifndef NO_DISPLAY
   /******** INIT DISPLAY ************/
   initDisplay();
   
@@ -105,12 +116,15 @@ void setup()
   drawLoadingScreen();
   delay(2*SECOND_MS);
 
+
   /******** SHOW LED INIT STATUS (devices without screen) *****/
   mMonitor.NerdStatus = NM_waitingConfig;
   doLedStuff(0);
-
+#endif
+#ifndef NO_DISPLAY
 #ifdef SDMMC_1BIT_FIX
   SDCrd.initSDcard();
+#endif
 #endif
 
   /******** INIT WIFI ************/
