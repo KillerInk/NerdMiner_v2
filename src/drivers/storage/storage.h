@@ -2,10 +2,14 @@
 #define _STORAGE_H_
 
 #include <Arduino.h>
+#ifdef FORCE_CONFIG
+#include "forcedconfig.h"
+#endif
 
 // config files
 
 // default settings
+#ifndef FORCE_CONFIG
 #ifndef HAN
 #define DEFAULT_SSID		"NerdMinerAP"
 #else
@@ -17,6 +21,7 @@
 #define DEFAULT_WALLETID	"yourBtcAddress"
 #define DEFAULT_POOLPORT	21496
 #define DEFAULT_TIMEZONE	2
+#endif
 #define DEFAULT_SAVESTATS	false
 #define DEFAULT_INVERTCOLORS	false
 #define DEFAULT_BRIGHTNESS	250

@@ -121,7 +121,7 @@ void setup()
   mMonitor.NerdStatus = NM_waitingConfig;
   doLedStuff(0);
 #endif
-#ifndef NO_DISPLAY
+#ifndef NO_SDCARD
 #ifdef SDMMC_1BIT_FIX
   SDCrd.initSDcard();
 #endif
