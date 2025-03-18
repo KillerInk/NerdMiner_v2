@@ -556,9 +556,8 @@ void runStratumWorker(void *name) {
           break;
         unsigned long sumbit_id = 0;
         tx_mining_submit(client, mWorker, mJob, res->nonce, sumbit_id);
-        Serial.print("   - Current diff share: "); Serial.println(res->difficulty,12);
-        Serial.print("   - Current pool diff : "); Serial.println(currentPoolDifficulty,12);
-        Serial.print("   - TX SHARE: ");
+        Serial.printf("|%10s|%10s|%s", "diff share","pool diff","TX SHARE\n");
+        Serial.printf("| %.6f | %.6f |", res->difficulty,currentPoolDifficulty);
         for (size_t i = 0; i < 32; i++)
             Serial.printf("%02x", res->hash[i]);
         Serial.println("");

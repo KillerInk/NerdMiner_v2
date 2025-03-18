@@ -25,22 +25,36 @@ void noDisplay_AlternateRotation(void)
 {
 }
 
+uint8_t showHeadercounter = 0;
 void noDisplay_NoScreen(unsigned long mElapsed)
 {
   mining_data data = getMiningData(mElapsed);
-
-  // Print hashrate to serial
-  Serial.printf(">>> Completed %s share(s), %s Khashes, avg. hashrate %s KH/s\n",
-                data.completedShares.c_str(), data.totalKHashes.c_str(), data.currentHashRate.c_str());
-
-  // Print extended data to serial for no display devices
-  Serial.printf(">>> Valid blocks: %s\n", data.valids.c_str());
-  Serial.printf(">>> Block templates: %s\n", data.templates.c_str());
-  Serial.printf(">>> Best difficulty: %s\n", data.bestDiff.c_str());
-  Serial.printf(">>> 32Bit shares: %s\n", data.completedShares.c_str());
-  Serial.printf(">>> Temperature: %s\n", data.temp.c_str());
-  Serial.printf(">>> Total MHashes: %s\n", data.totalMHashes.c_str());
-  Serial.printf(">>> Time mining: %s\n", data.timeMining.c_str());
+  if (showHeadercounter <= 0)
+  {
+    Serial.printf("|%13s|%13s|%13s|%13s|%13s|%13s|%13s|%13s|%13s|\n",
+                  "Time",
+                  "BlockTemplate",
+                  "HashRate",
+                  "BestDiff",
+                  "Temperature",
+                  "MHashes",
+                  "KHashs",
+                  "32bitShares",
+                  "BlocksFound");
+    showHeadercounter = 5;
+  }
+  showHeadercounter--;
+  //              time       blocktemp         hash    bedif     temp        mhas
+  Serial.printf("|%13s|%13s|%9sKH/s|%13s|%13s|%13s|%13s|%13s|%13s|\n",
+                data.timeMining.c_str(),
+                data.templates.c_str(),
+                data.currentHashRate.c_str(),
+                data.bestDiff.c_str(),
+                data.temp.c_str(),
+                data.totalMHashes.c_str(),
+                data.totalKHashes.c_str(),
+                data.completedShares.c_str(),
+                data.valids.c_str());
 }
 void noDisplay_LoadingScreen(void)
 {
