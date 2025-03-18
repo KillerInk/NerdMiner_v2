@@ -122,8 +122,8 @@ bool tx_mining_auth(WiFiClient& client, const char * user, const char * pass)
 
     // Authorize
     id = getNextId(id);
-    sprintf(payload, "{\"params\": [\"%s\", \"%s\"], \"id\": %u, \"method\": \"mining.authorize\"}\n", 
-      user, pass, id);
+    sprintf(payload, "{\"params\": [\"%s.%s\", \"%s\"], \"id\": %u, \"method\": \"mining.authorize\"}\n", 
+      user,ESP.getChipModel(), pass, id);
     
     Serial.printf("[WORKER] ==> Autorize work\n");
     Serial.print("  Sending  : "); Serial.println(payload);
